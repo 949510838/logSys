@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    	 http://www.springframework.org/schema/beans/spring-beans.xsd
+     	 http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop.xsd
+         http://www.springframework.org/schema/tx
+     	 http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+
+
+
+
+	<bean id="dB2xls" class="com.logSys.util.DB2xls" scope="prototype">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+	<!-- singleton，单例 (springMVC的controller默认值) 在容器中只创建一个bean对象 线程不安全 -->
+	<!-- prototype，容器中存在多个Bean对象，每次访问容器获取对象，都会生成一个新对象，即每次调用getBean都会获取一个新的对象 -->
+	<bean id="logController"
+		class="com.logSys.controller.LogController" scope="prototype">
+		<property name="logService" ref="logService"></property>
+		<property name="dB2xls" ref="dB2xls"></property>
+	</bean>
+	<bean id="logService" class="com.logSys.service.LogService"
+		scope="prototype">
+		<property name="logDao" ref="logDao"></property>
+	</bean>
+	<bean id="logDao" class="com.logSys.dao.LogDao" scope="prototype">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+
+
+</beans>     
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.logSys.entity">
+
+	<class name="LogWarehouse" table="log_warehouse" lazy="false">
+		<id name="id" column="id">
+			<generator class="native"></generator>
+		</id>
+		<property name="log_type" column="log_type"></property>
+		<property name="operator" column="operator"></property>
+		<property name="content" column="content"></property>
+		<property name="remarks" column="remarks"></property>
+		<property name="log_date" column="log_date"></property>
+		<many-to-one name="ls" column="source_id"
+			class="LogsourceWarehouse" cascade="save-update" />
+	</class>
+
+</hibernate-mapping>
+
+
+

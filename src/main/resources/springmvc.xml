@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="	
+      	http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd    
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd                
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/task  
+		http://www.springframework.org/schema/task/spring-task-3.2.xsd 
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd  
+      ">
+
+	<!-- controller配置 -->
+	<!-- 配置注解映射器（适配器）驱动 可以将request参数与绑定到controller注解参数上，与下面component-scan一起使用 -->
+	<mvc:annotation-driven />
+	<!-- 扫描controller包下的注解类，让springioc容器去扫描带@Controller和其它@component类以及定时任务等类注入到ioc容器中,用于注解方式的action -->
+	<!-- component和controller等属于同级注解类型，都可以有这个扫描到 -->
+	<context:component-scan
+		base-package="com.logSys.controller" />
+
+	<!-- 配适器 :ajax返回json字符串的配置 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean
+					class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- 配置MultipartResolver 用于文件上传 使用spring的CommosMultipartResolver -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="utf-8" />
+		<property name="maxUploadSize" value="100485760" />
+		<property name="maxInMemorySize" value="4096" />
+		<property name="resolveLazily" value="true" />
+	</bean>
+
+
+	<!--配置拦截器 -->
+	<mvc:interceptors>
+		<!--登录拦截器 -->
+		<mvc:interceptor>
+			<mvc:mapping path="/**" /> 	<!-- /**代表路径和子路径所有，/*代表当前路径所有 -->
+			<bean class="com.logSys.interceptor.CheckLogin" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+	<!-- 【处理静态资源方式2】配置springmvc静态资源解析 -->
+	<!-- 默认dispatchservlet拦截所有的请求交给适配器解析（web.xml配置的/），所以访问不到 -->
+	<!-- location元素表示webapp目录下的static包下的所有文件；mapping元素表示以/static开头的所有请求路径，如/static/a 
+		或者/static/a/b；该配置的作用是：DispatcherServlet不会拦截以/static开头的所有请求路径，并当作静态资源 -->
+	<!-- <mvc:resources mapping="/**" location="/"/> -->
+	<!-- <mvc:resources mapping="/js/**" location="/js/"/> -->
+
+	<!-- 【处理静态资源方式3】自动处理静态资源 -->
+	<!-- 会在SpringMVC上下文中定义一个org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler，对进入DispatcherServlet的URL进行筛查，静态资源的请求，就将该请求转由Web应用服务器默认的Servlet处理，如果不是静态资源的请求，才由DispatcherServlet继续处理 -->
+	<mvc:default-servlet-handler />
+
+
+
+	<!-- 配置定时任务扫描 -->
+	<task:annotation-driven />
+
+	<!-- 以springMVC配置文件的方式 ioc依赖注入beans -->
+	<!-- 导入beans工厂 -->
+	<import resource="beans.xml" />
+	<!-- 导入数据源和事务支持 -->
+	<import resource="datasource.xml" />
+	<!-- 导入spring缓存支持 -->
+	<import resource="springcache.xml" />
+
+
+	<!-- aop -->
+	<!-- 激活组件扫描功能,在包com.logSys.aop及其子包下面自动扫描通过注解配置的组件 -->
+	<context:component-scan
+		base-package="com.logSys.aop" />
+	<!-- 启动对@AspectJ注解的支持 -->
+	<!-- proxy-target-class等于true是强制使用cglib代理，proxy-target-class默认是false，如果你的类实现了接口 
+		就走JDK代理，如果没有，走cglib代理 -->
+	<!-- 注：对于单利模式建议使用cglib代理，虽然JDK动态代理比cglib代理速度快，但性能不如cglib -->
+	<aop:aspectj-autoproxy expose-proxy="true"></aop:aspectj-autoproxy>
+
+
+</beans>      
+
+
+
+
+
+
+
+
