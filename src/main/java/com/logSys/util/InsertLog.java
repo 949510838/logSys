@@ -21,7 +21,7 @@ public class InsertLog {
 	 * 
 	* @Title: insert 
 	* @Description: 
-	* @author: anthor
+	* @author: zhang
 	* @date 2019年10月30日 上午10:12:22
 	* @param log_type 日志类型：增加 删除 修改 查询
 	* @param source_name 日志来源名称
