@@ -21,11 +21,7 @@ import com.logSys.controller.LogController;
 @Component  //加入到IoC容器
 @Aspect  //指定当前类为切面类
 public class PrintLog4j {
-
-    //指定切入点表达式，拦截那些方法，即为那些类生成代理对象
-    //@Pointcut("execution(* com.bie.aop.UserDao.save(..))")  ..代表所有参数
-    //@Pointcut("execution(* com.bie.aop.UserDao.*())")  指定所有的方法
-    //@Pointcut("execution(* com.bie.aop.UserDao.save())") 指定save方法
+    
 	private static Logger log = Logger.getLogger(PrintLog4j.class);
 	
 	public PrintLog4j() {
@@ -33,6 +29,10 @@ public class PrintLog4j {
 		//System.out.println("调用了PrintLog4j aop 的构造方法");
 	}
     
+	//指定切入点表达式，拦截那些方法，即为那些类生成代理对象
+    //@Pointcut("execution(* com.bie.aop.UserDao.save(..))")  ..代表所有参数
+    //@Pointcut("execution(* com.bie.aop.UserDao.*())")  指定所有的方法
+    //@Pointcut("execution(* com.bie.aop.UserDao.save())") 指定save方法
     @Pointcut("execution(* com.logSys.controller.*.*(..))")
     public void pointCut(){
     	//System.out.println("LogAspect----logStart");
