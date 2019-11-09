@@ -25,17 +25,17 @@ public class ExecCMD {
 		BufferedReader reader = null;
 		try {
 			p = Runtime.getRuntime().exec(cmd, null);
-			p.waitFor();
+			//p.waitFor();
 			inputStreamReader = new InputStreamReader(p.getInputStream(), "GBK");
 			reader = new BufferedReader(inputStreamReader);
 			String line = "";
 			while ((line = reader.readLine()) != null) {
+				System.out.println(line);
 				output.append(line + "\n");
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		
 		} finally {
 			IOUtils.closeQuietly(reader);
 			IOUtils.closeQuietly(inputStreamReader);
@@ -46,7 +46,10 @@ public class ExecCMD {
 	}
 	
 	public static void main(String[] args) {
-		exec("ping www.baidu.com");
+		//exec("ping www.baidu.com");
+		exec("tracert www.baidu.com");
+		//exec("ls -al");
+		
 	}
 	
 
