@@ -245,6 +245,14 @@
 			<artifactId>okhttp</artifactId>
 			<version>3.14.1</version>
 		</dependency>
+
+		<!-- redis连接驱动包 -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+		
 		
 		
 	</dependencies>
