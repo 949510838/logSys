@@ -246,15 +246,26 @@
 			<version>3.14.1</version>
 		</dependency>
 
-		<!-- redis连接驱动包 -->
+		<!-- redis客户端连接驱动包 -->
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 			<version>3.0.1</version>
 		</dependency>
-		
-		
-		
+	
+		<!-- 项目中支持junit测试 -->
+		<dependency> <!-- junit单元测试 -->
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<!-- <scope>test</scope> 设置scope为test后，只能在src/test/java下使用--> 
+		</dependency>
+		<dependency> <!-- 使用spring中对Junit框架的整合功能 --> 
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>4.3.1.RELEASE</version>
+			<!-- <scope>test</scope> 设置scope为test后，只能在src/test/java下使用--> 
+		</dependency>
 	</dependencies>
       
 </project>

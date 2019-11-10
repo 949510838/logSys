@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
@@ -15,7 +16,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.logSys.dao.LogDao;
 import com.logSys.service.LogService;
 
+/**
+ * 
+* @Title: test01
+* @Description: web工程测试类
+* @author: zhang
+* @date 2019年11月10日 下午3:47:37
+ */
 @Controller
+@Scope("prototype") //不设置默认为单例模式
 public class test01 {
 	
 	@Autowired
