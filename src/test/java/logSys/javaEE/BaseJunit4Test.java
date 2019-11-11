@@ -1,7 +1,7 @@
 /**
  * 
  */
-package logSys;
+package logSys.javaEE;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

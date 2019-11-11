@@ -12,16 +12,15 @@
     http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
 	<!-- 扫描要使用缓存的包 ，给要添加缓存的类或者方法添加相应的注解即可添加缓存功能-->
-	<context:component-scan
-		base-package="com.logSys" />
+	<context:component-scan	base-package="com.logSys" />
 	<!-- 开启注解缓存 -->
-	<cache:annotation-driven
-		cache-manager="cacheManager" />
+	<cache:annotation-driven cache-manager="cacheManager" />
 
 	<!-- 配置EhCache的CacheManager,通过configLocation指定ehcache.xml文件的位置 -->
 	<bean id="ehCacheManager"
 		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
 		p:configLocation="classpath:ehcache.xml" p:shared="false" />
+	
 	<!-- 配置基于EhCache的缓存管理器,并将EhCache的CacheManager注入该缓存管理器Bean -->
 	<bean id="cacheManager"
 		class="org.springframework.cache.ehcache.EhCacheCacheManager"

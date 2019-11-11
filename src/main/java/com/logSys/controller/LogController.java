@@ -26,6 +26,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.logSys.common.result.ErrorMsg;
+import com.logSys.common.result.SuccessMsg;
 import com.logSys.entity.All_log;
 import com.logSys.entity.DeleteRate;
 import com.logSys.entity.Log_source;
@@ -135,7 +138,7 @@ public class LogController {
 		}
 		return list;
 	}	
-	 //通过id删除日志 
+	//通过id删除日志 
 	//required = true 表示不传值则抛出异常
 	@RequestMapping(value="/deleteLogData")
 	public  @ResponseBody String deleteData(@RequestParam(value="arrid[]", required = false) int[] arrid,HttpServletRequest req) {
@@ -182,7 +185,9 @@ public class LogController {
 	//日志插入接口
 	@RequestMapping(value="/saveLog")
 	@ResponseBody
-	public String saveLog(HttpServletRequest req,HttpServletResponse res) throws IOException {
+	public String saveLog(HttpServletRequest req,HttpServletResponse res) throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		
 		try {
 			All_log al = new All_log();
 			if(req.getParameter("log_type") != null) al.setLog_type(req.getParameter("log_type").replaceAll("\\s", ""));
@@ -198,9 +203,12 @@ public class LogController {
 			}
 			logService.saveLog(al);
 		} catch (Exception e) {
-			return "error";
+			ErrorMsg errorMsg = new ErrorMsg();
+			errorMsg.message = "插入失败";
+			return mapper.writeValueAsString(errorMsg);
 		}	
-		return "insert success";
+		String msg = mapper.writeValueAsString(new SuccessMsg());
+		return msg;
 	}
 	
 	@RequestMapping(value="/getDeleteRate")

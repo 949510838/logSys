@@ -9,7 +9,7 @@
       	http://www.springframework.org/schema/beans 
 		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd    
 		http://www.springframework.org/schema/mvc
-		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd                
+		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd                
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context-3.0.xsd
 		http://www.springframework.org/schema/task  
@@ -21,28 +21,39 @@
       ">
 
 	<!-- controller配置 -->
-	<!-- 配置注解映射器（适配器）驱动 可以将request参数与绑定到controller注解参数上，与下面component-scan一起使用 -->
-	<mvc:annotation-driven />
+	<!-- 配置注解映射器（适配器）驱动,将request请求路径参数绑定到controller注解参数上，与下面component-scan一起使用 -->
+	<mvc:annotation-driven>
+		<!-- 消息转换器 ，将返回的@ResponseBody返回的字符串编码(content-type)格式为UTF-8，省略每个映射都配置produces -->
+		<mvc:message-converters register-defaults="true">
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<property name="supportedMediaTypes" >
+					<list>
+	                    <value>text/html;charset=UTF-8</value>
+	                    <value>application/json;charset=UTF-8</value>
+	                    <value>text/plain;charset=UTF-8</value>
+	                    <value>application/xml;charset=UTF-8</value>
+	                </list>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
 	<!-- 扫描controller包下的注解类，让springioc容器去扫描带@Controller和其它@Component类以及定时任务等类自动注入到ioc容器中,用于注解方式的action -->
 	<!-- component和controller等属于同级注解类型，都可以用这个扫描到 -->
 	<context:component-scan base-package="com.logSys.controller" />
 	<!-- 扫描测试类所在的包 -->
 	<context:component-scan base-package="com.logSys.test" />
 
-	<!-- 配适器 :ajax返回json字符串的配置 -->
-	<bean
-		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+	<!-- 配适器 :对@ResponseBody返回为非字符串的对象类型转为json字符串的配置 -->
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 		<property name="messageConverters">
 			<list>
-				<bean
-					class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+				<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
 			</list>
 		</property>
 	</bean>
 
 	<!-- 配置MultipartResolver 用于文件上传 使用spring的CommosMultipartResolver -->
-	<bean id="multipartResolver"
-		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="defaultEncoding" value="utf-8" />
 		<property name="maxUploadSize" value="100485760" />
 		<property name="maxInMemorySize" value="4096" />
@@ -75,13 +86,15 @@
 	<!-- 配置定时任务扫描 -->
 	<task:annotation-driven />
 
-	<!-- 以springMVC配置文件的方式 ioc依赖注入beans -->
+	<!-- 以springMVC的ioc容器依赖注入beans -->
 	<!-- 导入beans工厂 -->
 	<import resource="beans.xml" />
 	<!-- 导入数据源和事务支持 -->
 	<import resource="datasource.xml" />
 	<!-- 导入spring缓存支持 -->
 	<import resource="springcache.xml" />
+	<!-- 导入spring对redis整合 -->
+	<import resource="springredis.xml" />
 
 
 	<!-- aop -->

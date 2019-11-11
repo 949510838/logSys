@@ -42,6 +42,14 @@ public class test01 {
 		return "张三";
 	}
 	
+	@RequestMapping(value="/test03")
+	@ResponseBody
+	public String test03(HttpServletRequest requset,HttpServletResponse response) {
+		System.out.println(logService);
+		System.out.println(requset);
+		return "张三";
+	}
+	
 	@RequestMapping(value="/test02")
 	public String test02(HttpServletRequest req) {
 		System.out.println(1232);
