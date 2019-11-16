@@ -21,7 +21,7 @@
         <property name="maxWaitMillis" value="${redis.maxWait}"/>
         <property name="testOnBorrow" value="${redis.testOnBorrow}"/>
     </bean>
-
+    
     <!--3.配置redis的连接工厂-->
     <!--等价下面的配置 <bean id="JedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" p:host-name="${redis.host}" p:password="${redis.pass}" p:port="${redis.port}" p:poolConfig-ref="poolConfig"/> -->
     <bean id="JedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
@@ -32,7 +32,7 @@
     	<property name="poolConfig" ref="poolConfig" />
     </bean>
 
-    <!--获取redisTemplate,template需要redis连接工厂-->
+    <!--4.获取redisTemplate,template需要redis连接工厂-->
     <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
     	<property name="connectionFactory" ref="JedisConnectionFactory" />
     	<!-- 设置序列化Key的实例化对象,解决String乱码问题 -->
@@ -42,8 +42,40 @@
     	<property name="valueSerializer">
     		<bean class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
     	</property>
-    	
+    	<property name="hashKeySerializer">
+    		<bean class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
+    	</property>   	
     </bean>
-
+    
+    
+    <!-- 若只使用连接池的配置，在代码中获取该对象即可获取jedis  -->
+	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+        <constructor-arg name="poolConfig" ref="poolConfig"></constructor-arg>
+        <constructor-arg name="host" value="${redis.host}"></constructor-arg>
+        <constructor-arg name="port" value="${redis.port}"></constructor-arg>
+        <constructor-arg name="timeout" value="${redis.timeout}"></constructor-arg>
+        <constructor-arg name="password" value="${redis.pass}"></constructor-arg>
+    </bean>
+    
+    <!-- 集群cluster配置 -->
+    <bean id="jedisCluster" class="redis.clients.jedis.JedisCluster">
+        <!-- nodes的注入可以先创建多个HostAndPort的bean，下面使用<ref bean="node1"/>进行注入 -->
+        <constructor-arg name="nodes">
+            <set>
+                <!-- 配置Redis集群中的Redis节点信息，端口分别是6379~6386共8个节点 -->
+                <bean class="redis.clients.jedis.HostAndPort">
+                    <constructor-arg name="host" value="127.0.0.1"></constructor-arg>
+                    <constructor-arg name="port" value="6379"></constructor-arg>
+                </bean>
+                <!-- 鉴于篇幅原因，中间省略了6个HostAndPort的配置 -->
+                <bean class="redis.clients.jedis.HostAndPort">
+                    <constructor-arg name="host" value="127.0.0.1"></constructor-arg>
+                    <constructor-arg name="port" value="6386"></constructor-arg>
+                </bean>
+            </set>
+        </constructor-arg>
+        <constructor-arg name="poolConfig" ref="jedisPoolConfig"></constructor-arg>
+    </bean>
+	
 
 </beans>

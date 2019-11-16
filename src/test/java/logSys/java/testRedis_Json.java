@@ -5,6 +5,7 @@ package logSys.java;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.List;
 
@@ -25,8 +26,32 @@ import redis.clients.jedis.JedisPoolConfig;
 * @author: zhang
 * @date 2019年11月10日 下午4:29:45
 */
-public class test {
+public class testRedis_Json {
 
+	//对象的hash与地址值的关系，hashcode()和toString()，==和equals的比较
+	@Test
+	public void testHash() {
+		Object object = new Object();
+		//java中对象的hash值指hashcode值，HashSet、HashTable等比较元素相等使用的hashcode值
+		System.out.println(object.hashCode()); //object类的hashcode值是将变量引用的内存地址通过hash算法得到的整数值
+		System.out.println(object.toString()); //object的tostring方法打印的是：类名@+引用地址的hashcode的16进制整数
+		System.out.println(Integer.toHexString(object.hashCode()));
+		
+		//String重写了hashcode方法，只要字符串相同，hashcode值相等，而不是根据地址来计算
+		System.out.println(new String("aaa").hashCode() + "==========" + "aaa".hashCode());
+		//number类型也重写了hashcode方法，hashcode值即实际的数值
+		System.out.println(new Integer(2).hashCode());
+		
+		// == 比较的是两个变量的引用地址值
+		System.out.println(2 == new Integer(2)); //8种基本类型比较大小直接比较数值，基本类型和number类型比较时依然比较数值
+		System.out.println(new Integer(2) == new Integer(2)); //number类型比较大小比较引用地址
+		//如果直接继承Object类的equals()方法，依然比较变量的引用地址（Object的equals方法实际就是使用的==比较）
+		//String和Number类型都对equals方法进行了重写，只要值相同即相等
+		System.out.println(new Integer(2).equals(new Integer(2)));
+
+		//print函数打印的就是对象的toString方法
+	}
+	
 	//对象和json互相转换
 	@Test
 	public void testObjMapper() throws Exception {
