@@ -48,8 +48,16 @@ public class testRedis_Json {
 		//如果直接继承Object类的equals()方法，依然比较变量的引用地址（Object的equals方法实际就是使用的==比较）
 		//String和Number类型都对equals方法进行了重写，只要值相同即相等
 		System.out.println(new Integer(2).equals(new Integer(2)));
-
+		
 		//print函数打印的就是对象的toString方法
+	}
+	
+	@Test
+	public void testKnow() {
+		//java中byte是整型，数值范围为-128~128（最高位当符号为看待），可以用来存储二进制数据，是将一个字节的二进制用十进制数值来表示，一个byte即一个字节 
+		for(byte b : "abc".getBytes()) {
+			System.out.println(b);
+		}
 	}
 	
 	//对象和json互相转换

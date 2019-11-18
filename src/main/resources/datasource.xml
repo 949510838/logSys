@@ -17,36 +17,33 @@
     http://www.springframework.org/schema/context 
     http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
-	<!-- 所有配置的公共部门 -->
 
 	<!-- 1) 连接池实例 -->
-	<!-- c3p0 mysql5专用的连接数据源 -->
-	<!-- <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"> 
-		<property name="driverClass" value="com.mysql.jdbc.Driver"></property> <property 
-		name="jdbcUrl" value="jdbc:mysql:///log_sys"></property> <property name="user" 
-		value="root"></property> <property name="password" value="cjshnb"></property> 
-		<property name="initialPoolSize" value="3"></property> <property name="maxPoolSize" 
-		value="6"></property> </bean> -->
-	<!-- c3p0 mysql8的连接数据源 -->
+	<!-- c3p0+mysql5专用的连接数据源 -->
+	<!-- 
+		<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"> 
+			<property name="driverClass" value="com.mysql.jdbc.Driver"></property> 
+			<property name="jdbcUrl" value="jdbc:mysql:///log_sys"></property> 
+			<property name="user" value="root"></property> 
+			<property name="password" value="cjshnb"></property> 
+			<property name="initialPoolSize" value="3"></property> 
+			<property name="maxPoolSize" value="6"></property> 
+		</bean> 
+	-->
+	<!-- c3p0+mysql8的连接数据源 -->
 	<!-- mysql8和mysql5的数据驱动不一样，jdbcUrl 、driverClass配置也不同。mysql8的连接驱动向下兼容mysql5，所以也可以用此配置链接mysql5，反之mysql5的连接驱动不能使用mysql8，当出现不能向下兼容的情况时，更换为上面mysql5的驱动配置，并更改连接驱动包为mysql5（pom.xml） -->
-	<bean id="dataSource"
-		class="com.mchange.v2.c3p0.ComboPooledDataSource">
-		<property name="driverClass" value="com.mysql.cj.jdbc.Driver"></property>
-		<property name="jdbcUrl"
-			value="jdbc:mysql://127.0.0.1:3306/log_sys?useSSL=false&amp;serverTimezone=UTC"></property>
+	<bean id="dataSource1" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="com.mysql.cj.jdbc.Driver"></property> <!-- 这里使用mysql8的驱动连接mysql5 -->
+		<property name="jdbcUrl" value="jdbc:mysql://127.0.0.1:3306/log_sys?useSSL=false&amp;serverTimezone=UTC"></property>
 		<property name="user" value="root"></property>
 		<property name="password" value="cjshnb"></property>
 		<property name="initialPoolSize" value="3"></property>
 		<property name="maxPoolSize" value="6"></property>
 	</bean>
-	<!-- druid连接池数据源 -->
-	<bean id="dataSource2"
-		class="com.alibaba.druid.pool.DruidDataSource" init-method="init"
-		destroy-method="close">
-		<property name="driverClassName"
-			value="com.mysql.cj.jdbc.Driver"></property>
-		<property name="url"
-			value="jdbc:mysql://127.0.0.1:3306/log_sys?useSSL=false&amp;serverTimezone=UTC"></property>
+	<!-- druid+mysql8连接池数据源 -->
+	<bean id="dataSource2" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property> <!-- 这里使用mysql8的驱动连接mysql5 -->
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306/log_sys?useSSL=false&amp;serverTimezone=UTC"></property>
 		<property name="username" value="root"></property>
 		<property name="password" value="cjshnb"></property>
 		<!-- 配置初始化大小、最小、最大 -->
@@ -63,8 +60,7 @@
 		<property name="testOnReturn" value="false" />
 		<!-- PSCache，并且指定每个连接上PSCache的大小(mysql数据库建议关闭) -->
 		<property name="poolPreparedStatements" value="false" />
-		<property name="maxPoolPreparedStatementPerConnectionSize"
-			value="-1" />
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="-1" />
 		<!-- 配置监控统计拦截的filters，去掉后监控界面sql无法统计 -->
 		<property name="filters" value="stat" />
 	</bean>
@@ -89,7 +85,6 @@
 				<!-- 配置启用二级缓存 -->
 				<prop key="hibernate.cache.use_second_level_cache">false</prop>
 				<!-- 配置二级缓存的提供商 -->
-
 			</props>
 		</property>
 
