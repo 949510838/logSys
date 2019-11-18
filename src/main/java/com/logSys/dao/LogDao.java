@@ -1,9 +1,12 @@
 package com.logSys.dao;
 
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -13,8 +16,10 @@ import org.hibernate.SessionFactory;
 
 import com.logSys.entity.All_log;
 import com.logSys.entity.DeleteRate;
+import com.logSys.entity.LogResult;
 import com.logSys.entity.LogWarehouse;
 import com.logSys.entity.Log_source;
+import com.logSys.entity.Logs;
 import com.logSys.entity.LogsourceWarehouse;
 
 public class LogDao {
@@ -192,4 +197,70 @@ public class LogDao {
 		}
 
 	}
-} 
+	/** 
+	* @Title: findByCondition 
+	* @Description: 
+	* @author: zhang
+	* @date 2019年11月18日 下午2:36:43
+	* @param sql
+	* @param para
+	* @param kwIsNotNull
+	* @return 
+	* List<All_log> 
+	* @version 
+	*/
+	public HashMap<String, Object> findByCondition(String sql, String[] para, boolean kwIsNotNull,int pageSize) {
+		String subSql = "select count(al.id) " + sql.substring(sql.indexOf("FROM"));
+		sql = sql.substring(0,sql.indexOf("inner")) 
+				+ " inner join (select id from all_log order by log_date desc) as al2 on al2.id=al.id " 
+				+ sql.substring(sql.indexOf("inner"))
+				+ " limit 0," + pageSize;
+		System.out.println(sql);
+		SQLQuery query = getSession().createSQLQuery(sql);
+		SQLQuery queryNum = getSession().createSQLQuery(subSql);
+		if(para != null&&para.length != 0) {
+			if(kwIsNotNull) { 
+				int i = 0;
+				for(;i < para.length-1 ;i++) {
+					query.setParameter(i, para[i]);	//参数下标从0开始
+					queryNum.setParameter(i, para[i]);	//参数下标从0开始
+				}
+				query.setParameter(i, "%"+ para[i] + "%").setParameter(i+1, "%"+ para[i] + "%").setParameter(i+2, "%"+ para[i] + "%").setParameter(i+3, "%"+ para[i] + "%").setParameter(i+4, "%"+ para[i] + "%");
+				queryNum.setParameter(i, "%"+ para[i] + "%").setParameter(i+1, "%"+ para[i] + "%").setParameter(i+2, "%"+ para[i] + "%").setParameter(i+3, "%"+ para[i] + "%").setParameter(i+4, "%"+ para[i] + "%");
+			} else {				
+				for(int i = 0;i < para.length ;i++) {
+					query.setParameter(i, para[i]);
+					queryNum.setParameter(i, para[i]);
+				}
+			}
+			
+		}
+		List list = query.list();
+		int num = ((BigInteger) queryNum.list().get(0)).intValue();
+		List<LogResult> li = new ArrayList<LogResult>();
+		for(int i=0;i<list.size();i++) {
+			Object[] obj = (Object[]) list.get(i);
+			
+			LogResult logRes = new LogResult();
+			logRes.setContent((String)obj[5]);
+			logRes.setId((int)obj[0]);
+			logRes.setSource_name((String)obj[2]);
+			logRes.setLog_type((String)obj[3]);
+			logRes.setOperator((String)obj[4]);
+			
+			SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //设置格式
+			String timeText=format.format(new Date(Long.valueOf(obj[7].toString())));  
+			
+			logRes.setLog_date(timeText);
+			logRes.setRemarks((String)obj[6]);
+			li.add(logRes);		
+		}
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("num",num );
+		map.put("list", li);
+		return map;	
+		
+	}
+}
+
+

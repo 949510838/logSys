@@ -9,7 +9,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -26,11 +28,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.logSys.common.result.ErrorMsg;
 import com.logSys.common.result.SuccessMsg;
 import com.logSys.entity.All_log;
 import com.logSys.entity.DeleteRate;
+import com.logSys.entity.LogResult;
 import com.logSys.entity.Log_source;
 import com.logSys.entity.Logs;
 import com.logSys.entity.Pagination;
@@ -52,7 +56,7 @@ public class LogController {
 		this.dB2xls = dB2xls;
 	}
 	
-	//查询入口
+	//查询入口(旧)
 	@RequestMapping(value="/getLogByKey")
 	@ResponseBody	//@ResponseBody放在方法上面和返回值前面作用一样
 	public List<Logs> getLogByKey(@RequestParam(value="para[]", required = false) String[] para,boolean kwIsNotNull, String sql,int currentPage,int pageSize,HttpServletRequest req) throws Exception{
@@ -95,6 +99,20 @@ public class LogController {
 		System.out.println("共查询 "+li.size()+"条记录");
 		return list;
 	}
+	
+	//日志查询入口（分页查询）
+	@RequestMapping(value="/getLogByCondition")
+	@ResponseBody
+	public String getLogByCondition(@RequestParam(value="para[]", required = false) String[] para,boolean kwIsNotNull, String sql,int pageSize,HttpServletRequest req) throws Exception {
+		HashMap<String, Object> map = logService.getLogByCondition(sql,para,kwIsNotNull,pageSize);
+		ObjectMapper mapper = new ObjectMapper();
+		String result = mapper.writeValueAsString(map);
+		new MyThread().startRun(req.getSession(), logService,sql,para,kwIsNotNull);
+		return result;
+	}
+	
+	
+	
 	//翻页功能
 	@RequestMapping(value="/getPage")
 	public @ResponseBody List<Logs> getPage(int currentPage,int pageSize,HttpServletRequest req) throws Exception{		
@@ -285,5 +303,31 @@ public class LogController {
 		
 	}
 
+}
+
+class MyThread extends Thread {
+	private LogService logService;
+	private HttpSession session;
+	private String sql;
+	private String[] para;
+	private boolean kwIsNotNull;
+	
+	@Override
+	public void run() {
+		System.out.println("线程开启执行");
+		List<All_log>  li = logService.getLogByKey(sql,para,kwIsNotNull);
+		session.setAttribute("li", li);
+		System.out.println("线程结束执行");
+	}
+	
+	public void startRun(HttpSession session,LogService logService,String sql,String[] para,boolean kwIsNotNull) {
+		this.logService = logService;
+		this.session = session;
+		this.sql = sql;
+		this.para = para;
+		this.kwIsNotNull = kwIsNotNull;
+		this.start();
+	}	
+	
 	
 }

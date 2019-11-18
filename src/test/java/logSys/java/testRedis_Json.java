@@ -66,7 +66,7 @@ public class testRedis_Json {
 		ObjectMapper mapper = new ObjectMapper();
 		SuccessMsg success = new SuccessMsg();
 		
-		//对象装json
+		//对象转json
 		String writeValueAsString = mapper.writeValueAsString(success);
 		System.out.println(writeValueAsString);
 		

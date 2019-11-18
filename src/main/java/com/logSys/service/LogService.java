@@ -1,11 +1,13 @@
 package com.logSys.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import com.logSys.dao.LogDao;
 import com.logSys.entity.All_log;
 import com.logSys.entity.DeleteRate;
+import com.logSys.entity.LogResult;
 
 public class LogService {
 	private LogDao logDao;
@@ -56,6 +58,23 @@ public class LogService {
 			logDao.save(al);
 		}
 		
+	}
+
+	/** 
+	* @Title: getLogByCondition 
+	* @Description: 
+	* @author: zhang
+	* @date 2019年11月18日 下午2:35:55
+	* @param sql
+	* @param para
+	* @param kwIsNotNull
+	* @return 
+	* List<All_log> 
+	* @version 
+	*/
+	public HashMap<String, Object> getLogByCondition(String sql, String[] para, boolean kwIsNotNull,int pageSize) {
+		// TODO Auto-generated method stub
+		return logDao.findByCondition(sql, para, kwIsNotNull,pageSize);
 	}
 	
 
