@@ -11,11 +11,15 @@ public class MySessionContext {
     private MySessionContext() {  
         sessionMap = new HashMap<String,HttpSession>();  
     }  
-    //单例类获取对象，不能直接new
+    //单例类获取对象，不能直接new.双检锁/双重校验锁（DCL，即 double-checked locking）
     public static MySessionContext getInstance() {  
-        if (instance == null) {  
-            instance = new MySessionContext();  
-        }  
+        if(instance == null) {
+        	synchronized (MySessionContext.class) {
+            	if (instance == null) {  
+                    instance = new MySessionContext();  
+                }  
+    		}   	
+        } 	
         return instance;  
     }  
 

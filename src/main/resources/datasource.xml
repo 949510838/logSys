@@ -111,8 +111,7 @@
 	<!-- # AOP配置 -->
 	<aop:config>
 		<!-- 切点 -->
-		<aop:pointcut
-			expression="execution(* com.logSys.service.*.*(..))" id="pt" />
+		<aop:pointcut expression="execution(* com.logSys.service.*.*(..))" id="pt" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="pt" />
 	</aop:config>
 </beans>
