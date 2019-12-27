@@ -3,6 +3,13 @@
  */
 package logSys.java;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -59,7 +66,7 @@ public class TestThread {
 		Thread.sleep(10000);
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		TestThread tt = new TestThread();
 		System.out.println(123);
 		new Thread(()->{
@@ -78,6 +85,7 @@ public class TestThread {
 				e.printStackTrace();
 			}				
 		}).start();
+
 	}
 	@Test
 	public void test01() {
@@ -90,5 +98,52 @@ public class TestThread {
 		System.out.println(service.toString());
 		System.out.println(Runtime.getRuntime().availableProcessors());
 		
+	}
+	@Test
+	public void test03() throws Exception {
+		Thread thread = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				System.out.println(Thread.currentThread());
+				
+			}
+		});
+		thread.start();
+		System.out.println(thread);
+		thread.sleep(1000);
+		new String();
+		"".concat("");
+		new StringBuilder("");
+		int a = 0x11;
+		System.out.println(a);
+		
+		
+		
+	}
+	@Test
+	public void test04() {
+		TreeSet tr = new TreeSet();
+		tr.add("a");
+		tr.add("c");
+		tr.add("b");
+		System.out.println(tr);
+		TreeMap tm = new TreeMap();
+		tm.put("a", 1);
+		tm.put("c", 2);
+		tm.put("b", 3);
+		System.out.println(tm);
+		
+		String a = new File("") + "";
+		a = new File("/") + new String("aaa");
+		a = new Integer(2) + "/";
+		System.out.println(a);
+		System.out.println("张".getBytes().length);
+		System.out.println(new BigInteger("1111111111111111111111111111111111111111111111111111111111").longValue());
+	}
+	
+	@Test
+	public void testJDBC() throws Exception {
+		Class.forName("com.mysql.jdbc.Driver");
 	}
 }

@@ -39,6 +39,8 @@ public class testRedis_Json {
 		
 		//String重写了hashcode方法，只要字符串相同，hashcode值相等，而不是根据地址来计算
 		System.out.println(new String("aaa").hashCode() + "==========" + "aaa".hashCode());
+		//编译时会自动将"a"+"b"+"c"进行相加运算得到"abc"
+		System.out.println("abc"=="a"+"b"+"c");
 		//number类型也重写了hashcode方法，hashcode值即实际的数值
 		System.out.println(new Integer(2).hashCode());
 		

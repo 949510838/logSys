@@ -211,10 +211,8 @@ public class LogDao {
 	*/
 	public HashMap<String, Object> findByCondition(String sql, String[] para, boolean kwIsNotNull,int pageSize) {
 		String subSql = "select count(al.id) " + sql.substring(sql.indexOf("FROM"));
-		sql = sql.substring(0,sql.indexOf("inner")) 
-				+ " inner join (select id from all_log order by log_date desc) as al2 on al2.id=al.id " 
-				+ sql.substring(sql.indexOf("inner"))
-				+ " limit 0," + pageSize;
+		sql = sql + " order by al.log_date desc" + " limit 0," + pageSize;
+		System.out.println(subSql);
 		System.out.println(sql);
 		SQLQuery query = getSession().createSQLQuery(sql);
 		SQLQuery queryNum = getSession().createSQLQuery(subSql);

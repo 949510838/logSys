@@ -12,7 +12,7 @@
     http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
 	<!--1.引入redis配置信息-->
-    <context:property-placeholder location="classpath:redis-config.properties"/>
+    <context:property-placeholder ignore-unresolvable="true" location="classpath*:redis-config.properties"/>
 	
 	<!--2.配置redis连接池-->
     <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">

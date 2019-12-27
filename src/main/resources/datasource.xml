@@ -77,6 +77,7 @@
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
+				<!-- update：有表更新，无表自动创建。create：每次都删除后重建表 -->
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
 
 				<!-- 配置使用查询缓存 -->

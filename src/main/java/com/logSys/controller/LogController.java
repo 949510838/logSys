@@ -9,12 +9,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -28,24 +29,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.logSys.common.result.ErrorMsg;
 import com.logSys.common.result.SuccessMsg;
 import com.logSys.entity.All_log;
 import com.logSys.entity.DeleteRate;
-import com.logSys.entity.LogResult;
 import com.logSys.entity.Log_source;
 import com.logSys.entity.Logs;
 import com.logSys.entity.Pagination;
 import com.logSys.service.LogService;
-import com.logSys.sessionManager.MySessionContext;
 import com.logSys.util.DB2xls;
 import com.logSys.util.ReadExcel;
 
 @Controller
 public class LogController {
 	private static Logger log = Logger.getLogger(LogController.class);
+	private static Executor pool = Executors.newCachedThreadPool(); //线程池对象
 	private LogService logService;
 	public void setLogService(LogService logService) {
 		this.logService = logService;
@@ -107,7 +106,7 @@ public class LogController {
 		HashMap<String, Object> map = logService.getLogByCondition(sql,para,kwIsNotNull,pageSize);
 		ObjectMapper mapper = new ObjectMapper();
 		String result = mapper.writeValueAsString(map);
-		new MyThread().startRun(req.getSession(), logService,sql,para,kwIsNotNull);
+		pool.execute(new MyThread(req.getSession(), logService,sql,para,kwIsNotNull));
 		return result;
 	}
 	
@@ -274,7 +273,10 @@ public class LogController {
 			//1. 使用web.xml中的webAppRootKey的配置获取项目根路径
 			System.out.println(System.getProperty("webApp.root"));
 			//【推荐】2.getResourceAsStream("") 不写路径事表示默认到了该类包的首页目录下 : 普通项目在/src/下，发布后在/web-inf/classes/
+			//2.1获取文件流
 			//InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("com/logSys/entity/All_log.xml");
+			//2.2获取文件路径字符串
+			//this.getClass().getClassLoader().getResource("com/logSys/util/qqyx.txt").getPath().substring(1);
 			
 			System.out.println(req.getSession().getServletContext().getContextPath()); //获取"/项目名"
 			System.out.println(req.getSession().getServletContext().getRealPath("/"));  //获取项目的绝对路径
@@ -306,12 +308,29 @@ public class LogController {
 }
 
 class MyThread extends Thread {
-	private LogService logService;
+	
 	private HttpSession session;
+	private LogService logService;
 	private String sql;
 	private String[] para;
 	private boolean kwIsNotNull;
 	
+	/**
+	 * @param session
+	 * @param logService
+	 * @param sql
+	 * @param para
+	 * @param kwIsNotNull
+	 */
+	public MyThread(HttpSession session, LogService logService, String sql, String[] para, boolean kwIsNotNull) {
+		super();
+		this.session = session;
+		this.logService = logService;
+		this.sql = sql;
+		this.para = para;
+		this.kwIsNotNull = kwIsNotNull;
+	}
+
 	@Override
 	public void run() {
 		System.out.println("线程开启执行");
@@ -319,15 +338,6 @@ class MyThread extends Thread {
 		session.setAttribute("li", li);
 		System.out.println("线程结束执行");
 	}
-	
-	public void startRun(HttpSession session,LogService logService,String sql,String[] para,boolean kwIsNotNull) {
-		this.logService = logService;
-		this.session = session;
-		this.sql = sql;
-		this.para = para;
-		this.kwIsNotNull = kwIsNotNull;
-		this.start();
-	}	
-	
+		
 	
 }
