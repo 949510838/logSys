@@ -271,7 +271,7 @@
 		<dependency> <!-- junit单元测试 -->
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<version>4.13.1</version>
 			<!-- <scope>test</scope> 设置scope为test后，只能在src/test/java下使用--> 
 		</dependency>
 		<dependency> <!-- 使用spring中对Junit框架的整合功能 --> 
